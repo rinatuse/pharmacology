@@ -1,5 +1,5 @@
-// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
+import { authGuard, roleGuard } from './guards'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -24,7 +24,8 @@ const router = createRouter({
           name: 'AdminDashboard',
           component: () => import('@views/admin/Dashboard.vue')
         }
-      ]
+      ],
+      beforeEnter: [authGuard, roleGuard('admin')]
     },
     {
       path: '/teacher',
@@ -36,7 +37,8 @@ const router = createRouter({
           name: 'TeacherDashboard',
           component: () => import('@views/teacher/Dashboard.vue')
         }
-      ]
+      ],
+      beforeEnter: [authGuard, roleGuard('teacher')]
     },
     {
       path: '/student',
@@ -48,7 +50,8 @@ const router = createRouter({
           name: 'StudentDashboard',
           component: () => import('@views/student/Dashboard.vue')
         }
-      ]
+      ],
+      beforeEnter: [authGuard, roleGuard('student')]
     }
   ]
 })
