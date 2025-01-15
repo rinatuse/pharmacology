@@ -32,14 +32,16 @@ import Textarea from 'primevue/textarea'
 import RadioButton from 'primevue/radiobutton'
 import Checkbox from 'primevue/checkbox'
 import Menubar from 'primevue/menubar'
+import DataView from 'primevue/dataview'
+import ProgressBar from 'primevue/progressbar'
+import Timeline from 'primevue/timeline'
+import Chart from 'primevue/chart'
 
 const app = createApp(App)
 
 app.component('Button', Button)
 app.component('InputText', InputText)
 app.component('Dropdown', Dropdown)
-app.component('DataTable', DataTable)
-app.component('Column', Column)
 app.component('Card', Card)
 app.component('Toast', Toast)
 app.component('Dialog', Dialog)
@@ -53,6 +55,12 @@ app.component('RadioButton', RadioButton)
 app.component('Checkbox', Checkbox)
 app.component('Password', Password)
 app.component('Menubar', Menubar)
+app.component('DataTable', DataTable)
+app.component('Column', Column)
+app.component('DataView', DataView)
+app.component('ProgressBar', ProgressBar)
+app.component('Timeline', Timeline)
+app.component('Chart', Chart)
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)

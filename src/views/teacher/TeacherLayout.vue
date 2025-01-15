@@ -14,7 +14,7 @@
         </template>
       </Menubar>
   
-      <div class="p-4">
+      <div class="layout-content">
         <RouterView />
       </div>
     </div>
@@ -22,12 +22,14 @@
   
   <script setup lang="ts">
   import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { RouterView, useRouter } from 'vue-router'
+  import { useAuthStore } from '@/stores/auth'
   import { MenuItem } from 'primevue/menuitem'
   import Menubar from 'primevue/menubar'
   
   const router = useRouter()
-  
+  const authStore = useAuthStore()
+
   const items = ref<MenuItem[]>([
     {
       label: 'Дашборд',
@@ -43,10 +45,22 @@
       label: 'Студенты',
       icon: 'pi pi-users',
       command: () => router.push('/teacher/students')
-    }
+    },
+  {
+    label: 'Тесты',
+    icon: 'pi pi-check-square',
+    command: () => router.push('/teacher/tests')
+  }
   ])
   
   const handleLogout = () => {
+    authStore.logout()
     router.push('/login')
   }
   </script>
+
+  <style scoped>
+.layout-content {
+  padding: 1rem;
+}
+</style>

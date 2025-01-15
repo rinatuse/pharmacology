@@ -35,7 +35,22 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'TeacherDashboard',
-          component: () => import('@views/teacher/Dashboard.vue')
+          component: () => import('../views/teacher/Dashboard.vue')
+        },
+        {
+          path: 'courses',
+          name: 'TeacherCourses',
+          component: () => import('../views/teacher/Courses.vue')
+        },
+        {
+          path: 'students',
+          name: 'TeacherStudents',
+          component: () => import('../views/teacher/Students.vue')
+        },
+        {
+          path: 'tests',
+          name: 'TeacherTests',
+          component: () => import('../views/teacher/Tests.vue')
         }
       ],
       beforeEnter: [authGuard, roleGuard('teacher')]
@@ -48,7 +63,22 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'StudentDashboard',
-          component: () => import('@views/student/Dashboard.vue')
+          component: () => import('../views/student/Dashboard.vue')
+        },
+        {
+          path: 'courses',
+          name: 'StudentCourses',
+          component: () => import('../views/student/Courses.vue')
+        },
+        {
+          path: 'progress',
+          name: 'StudentProgress',
+          component: () => import('../views/student/Progress.vue')
+        },
+        {
+          path: 'tests',
+          name: 'StudentTests',
+          component: () => import('../views/student/Tests.vue')
         }
       ],
       beforeEnter: [authGuard, roleGuard('student')]

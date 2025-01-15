@@ -22,11 +22,13 @@
   
   <script setup lang="ts">
   import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { RouterView, useRouter } from 'vue-router'
+  import { useAuthStore } from '@/stores/auth'
   import { MenuItem } from 'primevue/menuitem'
   import Menubar from 'primevue/menubar'
   
   const router = useRouter()
+  const authStore = useAuthStore()
   
   const items = ref<MenuItem[]>([
     {
@@ -43,10 +45,16 @@
       label: 'Прогресс',
       icon: 'pi pi-chart-line',
       command: () => router.push('/student/progress')
-    }
+    },
+  {
+    label: 'Тесты',
+    icon: 'pi pi-check-square',
+    command: () => router.push('/student/tests')
+  }
   ])
   
   const handleLogout = () => {
+    authStore.logout()
     router.push('/login')
   }
   </script>
