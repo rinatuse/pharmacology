@@ -7,22 +7,27 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: () => import('@views/Home.vue')
+      component: () => import('../views/Home.vue')
     },
     {
       path: '/login',
       name: 'Login',
-      component: () => import('@views/Login.vue')
+      component: () => import('../views/Login.vue')
     },
     {
       path: '/admin',
       name: 'Admin',
-      component: () => import('@views/admin/AdminLayout.vue'),
+      component: () => import('../views/admin/AdminLayout.vue'),
       children: [
         {
           path: 'dashboard',
           name: 'AdminDashboard',
-          component: () => import('@views/admin/Dashboard.vue')
+          component: () => import('../views/admin/Dashboard.vue')
+        },
+        {
+          path: 'users',
+          name: 'AdminUsers',
+          component: () => import('../views/admin/Users.vue')
         }
       ],
       beforeEnter: [authGuard, roleGuard('admin')]
@@ -30,7 +35,7 @@ const router = createRouter({
     {
       path: '/teacher',
       name: 'Teacher',
-      component: () => import('@views/teacher/TeacherLayout.vue'),
+      component: () => import('../views/teacher/TeacherLayout.vue'),
       children: [
         {
           path: 'dashboard',
@@ -58,7 +63,7 @@ const router = createRouter({
     {
       path: '/student',
       name: 'Student',
-      component: () => import('@views/student/StudentLayout.vue'),
+      component: () => import('../views/student/StudentLayout.vue'),
       children: [
         {
           path: 'dashboard',

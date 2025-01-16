@@ -36,6 +36,7 @@ import DataView from 'primevue/dataview'
 import ProgressBar from 'primevue/progressbar'
 import Timeline from 'primevue/timeline'
 import Chart from 'primevue/chart'
+import Tag from 'primevue/tag'
 
 
 const app = createApp(App)
@@ -62,6 +63,7 @@ app.component('DataView', DataView)
 app.component('ProgressBar', ProgressBar)
 app.component('Timeline', Timeline)
 app.component('Chart', Chart)
+app.component('Tag', Tag)
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
