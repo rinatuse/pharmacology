@@ -23,7 +23,7 @@
   <script setup lang="ts">
   import { ref } from 'vue'
   import { RouterView, useRouter } from 'vue-router'
-  import { useAuthStore } from '@/stores/auth'
+  import { useAuthStore } from '../../stores/auth'
   import { MenuItem } from 'primevue/menuitem'
   import Menubar from 'primevue/menubar'
   
