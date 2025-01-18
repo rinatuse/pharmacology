@@ -24,7 +24,7 @@
   import { ref } from 'vue'
   import { RouterView, useRouter } from 'vue-router'
   import { useAuthStore } from '../../stores/auth'
-  import { MenuItem } from 'primevue/menuitem'
+  import MenuItem from 'primevue/menuitem'
   import Menubar from 'primevue/menubar'
   
   const router = useRouter()
