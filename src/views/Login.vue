@@ -1,6 +1,9 @@
 <template>
   <div class="surface-ground">
-    <div style="height: 100vh" class="flex align-items-center justify-content-center">
+    <div
+      style="height: 100vh"
+      class="flex align-items-center justify-content-center"
+    >
       <Card class="w-30rem">
         <template #title>
           <div>
@@ -12,26 +15,28 @@
           <form @submit.prevent="handleSubmit">
             <div class="flex flex-column gap-2 mb-3">
               <label for="email">Email</label>
-              <InputText 
+              <InputText
                 id="email"
-                v-model="formData.email" 
+                v-model="email"
                 :class="{ 'p-invalid': v$.email.$invalid && v$.email.$dirty }"
                 type="email"
                 class="w-full"
-                autofocus 
+                autofocus
                 placeholder="Введите email"
               />
               <small class="p-error" v-if="v$.email.$error">
                 Введите корректный email
               </small>
             </div>
-            
+
             <div class="flex flex-column gap-2 mb-3">
               <label for="password">Пароль</label>
-              <Password 
+              <Password
                 id="password"
-                v-model="formData.password" 
-                :class="{ 'p-invalid': v$.password.$invalid && v$.password.$dirty }"
+                v-model="password"
+                :class="{
+                  'p-invalid': v$.password.$invalid && v$.password.$dirty,
+                }"
                 :feedback="true"
                 :toggleMask="true"
                 class="w-full"
@@ -47,7 +52,7 @@
             </div>
 
             <div class="flex align-items-center mb-3">
-              <Checkbox v-model="rememberMe" :binary="true" id="remember"/>
+              <Checkbox v-model="rememberMe" :binary="true" id="remember" />
               <label for="remember" class="ml-2">Запомнить меня</label>
             </div>
 
@@ -62,9 +67,9 @@
 
             <small class="p-error block mb-3" v-if="error">{{ error }}</small>
 
-            <Button 
-              type="submit" 
-              label="Войти" 
+            <Button
+              type="submit"
+              label="Войти"
               class="w-full"
               :disabled="v$.$invalid"
               icon="pi pi-sign-in"
@@ -78,80 +83,88 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
-import { useVuelidate } from '@vuelidate/core'
-import type { ValidationRule } from '@vuelidate/core'
-import { required, email, minLength } from '@vuelidate/validators'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
+import { useVuelidate } from '@vuelidate/core';
+import type { ValidationRule } from '@vuelidate/core';
+import { required, email, minLength } from '@vuelidate/validators';
+import type { UserRole } from '../types/user';
+import { useToast } from 'primevue/usetoast';
 
-interface FormData {
-  email: string
-  password: string
-}
+const router = useRouter();
+const authStore = useAuthStore();
+const toast = useToast();
 
-const router = useRouter()
-const authStore = useAuthStore()
-const rememberMe = ref(false)
+// Refs
+const email = ref('');
+const password = ref('');
+const rememberMe = ref(false);
+const error = ref('');
+const loading = ref(false);
 
-const formData = ref<FormData>({
-  email: '',
-  password: ''
-})
-
-const error = ref('')
-const loading = ref(false)
-
+// Validation rules
 const rules = {
-  email: { 
-    required: required as ValidationRule,
-    email: email as ValidationRule
-  },
-  password: { 
-    required: required as ValidationRule,
-    minLength: minLength(6) as ValidationRule
-  }
-}
+  email: { required, email },
+  password: { required, minLength: minLength(6) },
+};
 
-const v$ = useVuelidate(rules, formData)
+const v$ = useVuelidate(rules, { email, password });
 
+// Handle form submission
 const handleSubmit = async () => {
-  error.value = ''
-  loading.value = true
-  
+  error.value = '';
+  loading.value = true;
+
   try {
-    const isFormValid = await v$.value.$validate()
+    const isFormValid = await v$.value.$validate();
     if (!isFormValid) {
-      return
+      return;
     }
 
-    const role = authStore.login(formData.value.email, formData.value.password)
-    
+    const role = await authStore.login(email.value, password.value);
+
     if (role) {
-
       if (rememberMe.value) {
-        localStorage.setItem('rememberMe', 'true')
+        localStorage.setItem('rememberMe', 'true');
       }
 
-      switch (role) {
-        case 'admin':
-          router.push('/admin/dashboard')
-          break
-        case 'teacher':
-          router.push('/teacher/dashboard')
-          break
-        case 'student':
-          router.push('/student/dashboard')
-          break
-      }
-    } else {
-      error.value = 'Неверный email или пароль'
+      const routes: Record<UserRole, string> = {
+        admin: '/admin/dashboard',
+        teacher: '/teacher/dashboard',
+        student: '/student/dashboard',
+      };
+
+      toast.add({
+        severity: 'success',
+        summary: 'Успешно',
+        detail: 'Вы успешно вошли в систему',
+        life: 3000,
+      });
+
+      await router.push(routes[role]);
     }
   } catch (e) {
-    error.value = 'Произошла ошибка при входе'
+    console.error('Login error:', e);
+    error.value = 'Неверный email или пароль';
+    toast.add({
+      severity: 'error',
+      summary: 'Ошибка',
+      detail: 'Неверный email или пароль',
+      life: 3000,
+    });
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 </script>
 
+<style scoped>
+.p-password {
+  width: 100%;
+}
+
+:deep(.p-password-input) {
+  width: 100%;
+}
+</style>

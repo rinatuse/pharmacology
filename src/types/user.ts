@@ -1,20 +1,25 @@
-import type { UserRole } from './auth'
+export type UserRole = 'admin' | 'teacher' | 'student';
 
 export interface User {
-    id: number
-    email: string
-    role: UserRole
-    status: 'active' | 'blocked'
+  id: number;
+  email: string;
+  username: string;
+  role: UserRole;
 }
 
-export interface CreateUserDto {
-    email: string
-    role: UserRole
-    password: string
+export interface AuthResponse {
+  access: string;
+  refresh: string;
 }
 
-export interface UpdateUserDto {
-    email?: string
-    role?: UserRole
-    status?: 'active' | 'blocked'
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  email: string;
+  username: string;
+  password: string;
+  role: UserRole;
 }
