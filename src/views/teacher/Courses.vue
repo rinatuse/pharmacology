@@ -1,6 +1,7 @@
-<!-- views/teacher/Courses.vue -->
 <template>
   <div class="p-4">
+    <ConfirmDialog group="course" />
+
     <Card>
       <template #title>
         <div class="flex justify-content-between align-items-center">
@@ -93,7 +94,6 @@
             class="w-full"
           />
         </div>
-        <!-- Можно добавить дополнительные поля -->
       </div>
       <template #footer>
         <Button label="Отмена" @click="closeCourseDialog" text />
@@ -114,6 +114,10 @@ const toast = useToast();
 const confirm = useConfirm();
 const courses = ref<Course[]>([]);
 
+// Проверяем инициализацию сервисов
+console.log('Confirm service:', confirm);
+console.log('Toast service:', toast);
+
 const courseDialog = ref({
   visible: false,
   isEdit: false,
@@ -121,13 +125,25 @@ const courseDialog = ref({
 });
 
 const confirmDelete = (course: Course) => {
+  console.log('Начинаем процесс удаления курса:', course);
+  console.log('Сервис подтверждения:', confirm);
+
+  if (!confirm?.require) {
+    console.error('Сервис подтверждения не инициализирован корректно!');
+    return;
+  }
+
   confirm.require({
+    group: 'course',
     message: `Вы уверены, что хотите удалить курс "${course.name}"?`,
     header: 'Подтверждение удаления',
     icon: 'pi pi-exclamation-triangle',
     acceptLabel: 'Да',
     rejectLabel: 'Нет',
+    acceptIcon: 'pi pi-check',
+    rejectIcon: 'pi pi-times',
     accept: async () => {
+      console.log('Подтверждение получено, удаляем курс');
       try {
         await CourseService.deleteCourse(course.id);
         courses.value = courses.value.filter((c) => c.id !== course.id);
@@ -138,6 +154,7 @@ const confirmDelete = (course: Course) => {
           life: 3000,
         });
       } catch (error) {
+        console.error('Ошибка при удалении:', error);
         toast.add({
           severity: 'error',
           summary: 'Ошибка',
@@ -145,6 +162,15 @@ const confirmDelete = (course: Course) => {
           life: 3000,
         });
       }
+    },
+    reject: () => {
+      console.log('Удаление отменено');
+      toast.add({
+        severity: 'info',
+        summary: 'Отменено',
+        detail: 'Удаление курса отменено',
+        life: 3000,
+      });
     },
   });
 };
